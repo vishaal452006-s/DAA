@@ -1,0 +1,119 @@
+HorspoolApproach
+-------------------
+import java.util.*;
+class HorspoolApproach {
+   public int[] shiftTable(String ptn) {
+      int m=ptn.length();
+      int size=256;
+      int[] table=new int[size];
+      for(int i=0;i<=size-1;i++){
+         table[i]=m;
+      }
+      for(int j=0;j<=m-2;j++){
+         table[ptn.charAt(j)]=m-1-j;
+      }
+      return table;
+   }
+   public int horspoolMatching(String ptn, String txt) {
+   int[] table = shiftTable(ptn);
+   int m = ptn.length();
+   int n = txt.length();
+   int i = m - 1; // Align pattern's end with text index i
+
+   while (i <= n - 1) {
+      int k = 0;
+      while (k < m && ptn.charAt(m - 1 - k) == txt.charAt(i - k)) {
+         k = k + 1;
+      }
+
+      if (k == m) {
+         return i - m + 1; // Match found
+      } else {
+         i = i + table[txt.charAt(i)];
+      }
+   }
+   return -1;
+   }
+}
+public class HorspoolApproachPgm {
+   public static void main(String[] args) {
+      Scanner sc=new Scanner(System.in);
+      System.out.println("Enter the Text :");
+      String txt=sc.nextLine();
+      System.out.println("Enter the pattern to search :");
+      String ptn=sc.nextLine();
+      HorspoolApproach ha=new HorspoolApproach();
+      int res=ha.horspoolMatching(ptn,txt);
+      if (res!=-1){
+         System.out.println("Pattern Found at Index "+ res);
+      }
+      else{
+         System.out.println("Pattern not found");
+      }
+   }
+}
+z:\DAA>java HorspoolApproachPgm
+Enter the Text :
+have a happy day
+Enter the pattern to search :
+ap
+Pattern Found at Index 8
+z:\DAA>cat CompareSortPgm.java
+import java.util.*;
+class CompareSortPgm {
+   public int[] countSort(int[] arr,int size){
+      int n=size;
+      int[] count=new int[n];
+      int[] s=new int[n];
+      for(int i=0;i<n;i++){
+         count[i]=0;
+         s[i]=0;
+      }
+      for(int i=0;i<n-1;i++){
+         for(int j=i+1;j<n;j++){
+            if(arr[i]>arr[j]){
+               count[i]=count[i]+1;
+            }
+            else{
+               count[j]=count[j]+1;
+            }
+         }
+         for(int a:count){
+            System.out.print(a+" ");
+         }
+         System.out.println();
+      }
+      for(int i=0;i<n;i++){
+         s[count[i]]=arr[i];
+      }
+      return s;
+   }
+   public static void main(String[] args){
+      Scanner sc=new Scanner(System.in);
+      CompareSortPgm cs=new CompareSortPgm();
+      System.out.println("Enter the no. of Elements:");
+      int size=sc.nextInt();
+      int[] arr=new int[size];
+      for(int i=0;i<size;i++){
+         System.out.print("Enter the Element "+(i+1)+":");
+         arr[i]=sc.nextInt();
+      }
+      int[] res=cs.countSort(arr,size);
+      for(int a:res){
+         System.out.print(a+" ");
+      }
+   }
+}
+z:\DAA>java CompareSortPgm
+Enter the no. of Elements:
+5
+Enter the Element 1:19
+Enter the Element 2:78
+Enter the Element 3:56
+Enter the Element 4:90
+Enter the Element 5:34
+0 1 1 1 1
+0 3 1 2 1
+0 3 2 3 1
+0 3 2 4 1
+19 34 56 78 90
