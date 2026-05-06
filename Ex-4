@@ -1,0 +1,80 @@
+Heapsort
+--------
+import java.util.*;
+
+class HeapSort {
+    public void HeapBottomUp(int[] arr, int n) {
+        for (int i = n / 2; i >= 1; i--) {
+            siftDown(arr, i, n);
+        }
+    }
+
+        private void siftDown(int[] arr, int k, int n) {
+        int v = arr[k];
+        boolean heap = false;
+
+        while (!heap && (2 * k <= n)) {
+            int j = 2 * k;
+            if (j < n) {
+                if (arr[j] < arr[j + 1]) {
+                    j = j + 1;
+                }
+            }
+
+            if (v >= arr[j]) {
+                heap = true;
+            } else {
+                arr[k] = arr[j];
+                k = j;
+            }
+        }
+        arr[k] = v;
+    }
+
+        public void sort(int[] arr, int n) {
+        HeapBottomUp(arr, n);
+
+        for (int i = n; i > 1; i--) {
+            int temp = arr[1];
+            arr[1] = arr[i];
+            arr[i] = temp;
+            siftDown(arr, 1, i - 1);
+        }
+    }
+}
+
+class HeapSortPgm {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the no. of Elements:");
+        int n = sc.nextInt();
+
+        HeapSort hs = new HeapSort();
+        int[] arr = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            System.out.print("Enter the element " + i + ": ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.print("Before Sorting: ");
+        for (int i = 1; i <= n; i++) System.out.print(arr[i] + " ");
+        System.out.println();
+
+        hs.sort(arr, n);
+
+        System.out.print("After Sorting: ");
+        for (int i = 1; i <= n; i++) System.out.print(arr[i] + " ");
+    }
+}
+
+z:\DAA>java HeapSortPgm
+Enter the no. of Elements:
+5
+Enter the element 1: 10
+Enter the element 2: 99
+Enter the element 3: 23
+Enter the element 4: 109
+Enter the element 5: 65
+Before Sorting: 10 99 23 109 65
+After Sorting: 10 23 65 99 109
