@@ -1,0 +1,294 @@
+Knapsack Branch and Bound
+--------------------------
+import java.util.*;
+
+class Item {
+    int weight, profit, index;
+    double ratio;
+
+    Item(int w, int p, int i) {
+        weight = w;
+        profit = p;
+        index = i;
+        ratio = (double) p / w;
+    }
+}
+
+class Node {
+    int level, profit, weight;
+    double bound;
+    List<Integer> taken;
+
+    Node(int level, int profit, int weight, List<Integer> taken) {
+        this.level = level;
+        this.profit = profit;
+        this.weight = weight;
+        this.taken = new ArrayList<>(taken);
+    }
+}
+
+public class KnapsackBranchBound {
+
+    static int n, W;
+    static Item[] items;
+    static double bound(Node u) {
+        if (u.weight >= W)
+            return 0;
+
+        double profitBound = u.profit;
+        int j = u.level + 1;
+        int totalWeight = u.weight;
+
+        while (j < n && totalWeight + items[j].weight <= W) {
+            totalWeight += items[j].weight;
+            profitBound += items[j].profit;
+            j++;
+        }
+
+        if (j < n) {
+            profitBound = Math.ceil(profitBound+((W - totalWeight) * items[j].ratio));
+        }
+
+        return profitBound;
+    }
+
+    static void knapsack() {
+
+        PriorityQueue<Node> pq = new PriorityQueue<>(
+                (a, b) -> Double.compare(b.bound, a.bound)
+        );
+
+        Node u, v;
+
+        u = new Node(-1, 0, 0, new ArrayList<>());
+        u.bound = bound(u);
+        pq.add(u);
+
+        int maxProfit = 0;
+        List<Integer> bestItems = new ArrayList<>();
+
+        System.out.println("\n--- Step by Step Execution ---\n");
+
+        while (!pq.isEmpty()) {
+            u = pq.poll();
+            System.out.println("----------------------------------------------------------");
+            System.out.print("\nExpanding Node :\n Level= " + u.level +
+                    "\nProfit= " + u.profit +
+                    "\nWeight= " + u.weight);
+            System.out.printf("\nBound=%.2f",u.bound);
+            System.out.println("\n-----------------------------------------------------------");
+            if (u.bound > maxProfit) {
+
+                v = new Node(u.level + 1, u.profit, u.weight, u.taken);
+
+                if (v.level < n) {
+                    v.weight = u.weight + items[v.level].weight;
+                    v.profit = u.profit + items[v.level].profit;
+                    v.taken.add(items[v.level].index);
+                    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    System.out.println("With Item " + items[v.level].index);
+                    System.out.println("Weight ="+ v.weight);
+                    System.out.println("Profit ="+ v.profit);
+                    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    if (v.weight <= W && v.profit > maxProfit) {
+                        maxProfit = v.profit;
+                        bestItems = new ArrayList<>(v.taken);
+                    }
+
+                    v.bound = bound(v);
+
+                    if (v.bound > maxProfit) {
+                        pq.add(v);
+                    }
+                }
+
+                v = new Node(u.level + 1, u.profit, u.weight, u.taken);
+
+                if (v.level < n) {
+                   System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    System.out.println("Without Item " + items[v.level].index);
+                    System.out.println("Weight ="+ u.weight);
+                    System.out.println("Profit ="+ u.profit);
+                    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                    v.bound = bound(v);
+
+                    if (v.bound > maxProfit) {
+                        pq.add(v);
+                    }
+                }
+            }
+        }
+
+        System.out.println("\n--- Final Result ---");
+        System.out.println("Maximum Profit = " + maxProfit);
+        System.out.println("Items Selected (original indices): " + bestItems);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of items: ");
+        n = sc.nextInt();
+
+        items = new Item[n];
+
+        System.out.println("Enter weight and profit of each item:");
+        for (int i = 0; i < n; i++) {
+            System.out.println("Enter weight and profit of item:"+(i+1));
+            int w = sc.nextInt();
+            int p = sc.nextInt();
+            items[i] = new Item(w, p, i + 1);
+        }
+
+        System.out.print("Enter capacity of knapsack: ");
+        W = sc.nextInt();
+
+        Arrays.sort(items, (a, b) -> Double.compare(b.ratio, a.ratio));
+
+        knapsack();
+    }
+}
+
+z:\DAA>java KnapsackBranchBound
+Enter number of items: 4
+Enter weight and profit of each item:
+Enter weight and profit of item:1
+2 10
+Enter weight and profit of item:2
+3 15
+Enter weight and profit of item:3
+4 20
+Enter weight and profit of item:4
+3 25
+Enter capacity of knapsack: 7
+
+--- Step by Step Execution ---
+
+----------------------------------------------------------
+
+Expanding Node :
+ Level= -1
+Profit= 0
+Weight= 0
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 4
+Weight =3
+Profit =25
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 4
+Weight =0
+Profit =0
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 0
+Profit= 25
+Weight= 3
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 1
+Weight =5
+Profit =35
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 1
+Weight =3
+Profit =25
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 1
+Profit= 35
+Weight= 5
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 2
+Weight =8
+Profit =50
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 2
+Weight =5
+Profit =35
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 1
+Profit= 25
+Weight= 3
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 2
+Weight =6
+Profit =40
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 2
+Weight =3
+Profit =25
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 2
+Profit= 35
+Weight= 5
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 3
+Weight =9
+Profit =55
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 3
+Weight =5
+Profit =35
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 2
+Profit= 25
+Weight= 3
+Bound=45.00
+-----------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+With Item 3
+Weight =7
+Profit =45
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Without Item 3
+Weight =3
+Profit =25
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 2
+Profit= 40
+Weight= 6
+Bound=45.00
+-----------------------------------------------------------
+----------------------------------------------------------
+
+Expanding Node :
+ Level= 0
+Profit= 0
+Weight= 0
+Bound=35.00
+-----------------------------------------------------------
+
+--- Final Result ---
+Maximum Profit = 45
+Items Selected (original indices): [4, 3]
