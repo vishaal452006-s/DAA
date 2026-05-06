@@ -1,0 +1,172 @@
+
+BubbleSortPgm.java
+-------------------
+
+import java.util.*;
+
+class BubbleSort {
+   public void sortedArray(int[] a,int n){
+      for(int i=0;i<=n-2;i++){
+         System.out.println("\nPass "+(i+1)+": ");
+         for(int j=0;j<=n-2-i;j++){
+            if(a[j]>a[j+1]){
+               int temp=a[j];
+               a[j]=a[j+1];
+               a[j+1]=temp;
+            }
+         }
+         for(int elt:a){
+            System.out.print(elt+"\t");
+         }
+      }
+   }
+}
+
+class BubbleSortPgm {
+        public static void main(String[] args){
+                int[] a;
+                Scanner sc=new Scanner(System.in);
+                System.out.println("Enter the no. of Elements:");
+                int n=sc.nextInt();
+                a=new int[n];
+                for(int i=0;i<n;i++){
+                        System.out.println("Enter the element "+(i+1)+":");
+                        a[i]=sc.nextInt();
+                }
+                System.out.println("\nBefore Sorting :");
+                for(int elt:a){
+                        System.out.print(elt+"\t");
+                }
+                BubbleSort bs=new BubbleSort()  ;
+                bs.sortedArray(a,n);
+                System.out.println("\nAfter Sorting :");
+                for(int elt:a){
+                        System.out.print(elt+"\t");
+                }
+        }
+}
+
+
+
+Z:\DAA>javac BubbleSortPgm.java
+
+Z:\DAA>java BubbleSortPgm
+Enter the no. of Elements:
+7
+Enter the element 1:
+8
+Enter the element 2:
+9
+Enter the element 3:
+6
+Enter the element 4:
+4
+Enter the element 5:
+11
+Enter the element 6:
+0
+Enter the element 7:
+3
+
+Before Sorting :
+8       9       6       4       11      0       3
+Pass 1:
+8       6       4       9       0       3       11
+Pass 2:
+6       4       8       0       3       9       11
+Pass 3:
+4       6       0       3       8       9       11
+Pass 4:
+4       0       3       6       8       9       11
+Pass 5:
+0       3       4       6       8       9       11
+Pass 6:
+0       3       4       6       8       9       11
+After Sorting :
+0       3       4       6       8       9       11
+Z:\DAA>
+
+
+----------------------------------------------------------
+
+SelectionSortPgm
+-----------------
+
+import java.util.*;
+
+class SelectionSort {
+        public void sortedArray(int[] a,int n){
+                int min;
+                for(int i=0;i<=n-2;i++){
+                        min=i;
+                        for(int j=i+1;j<=n-1;j++){
+                                if(a[min]>a[j]){
+                                        min=j;
+                                }
+                        }
+                        int temp=a[min];
+                        a[min]=a[i];
+                        a[i]=temp;
+                        System.out.print("\nPass " + (i+1) +": ");
+                        for(int elt:a){
+                                System.out.print(elt+"\t");
+                        }
+                }
+        }
+}
+
+class SelectionSortPgm {
+        public static void main(String[] args){
+                int[] a;
+                Scanner sc=new Scanner(System.in);
+                System.out.println("Enter the no. of Elements:");
+                int n=sc.nextInt();
+                a=new int[n];
+                for(int i=0;i<n;i++){
+                        System.out.println("Enter the element "+(i+1)+":");
+                        a[i]=sc.nextInt();
+                }
+                System.out.println("\nBefore Sorting :");
+                for(int elt:a){
+                        System.out.print(elt+"\t");
+                }
+                SelectionSort ss=new SelectionSort()    ;
+                ss.sortedArray(a,n);
+                System.out.println("\nAfter Sorting :");
+                for(int elt:a){
+                        System.out.print(elt+"\t");
+                }
+        }
+}
+
+
+Z:\DAA>javac SelectionSortPgm.java
+
+Z:\DAA>java SelectionSortPgm
+Enter the no. of Elements:
+7
+Enter the element 1:
+8
+Enter the element 2:
+9
+Enter the element 3:
+6
+Enter the element 4:
+4
+Enter the element 5:
+11
+Enter the element 6:
+0
+Enter the element 7:
+3
+
+Before Sorting :
+8       9       6       4       11      0       3
+Pass 1: 0       9       6       4       11      8       3
+Pass 2: 0       3       6       4       11      8       9
+Pass 3: 0       3       4       6       11      8       9
+Pass 4: 0       3       4       6       11      8       9
+Pass 5: 0       3       4       6       8       11      9
+Pass 6: 0       3       4       6       8       9       11
+After Sorting :
+0       3       4       6       8       9       11
